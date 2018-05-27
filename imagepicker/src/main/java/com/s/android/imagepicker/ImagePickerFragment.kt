@@ -1,13 +1,18 @@
 package com.s.android.imagepicker
 
+import android.Manifest
 import android.app.Activity
 import android.app.Application
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.support.v4.app.FragmentManager
+import android.support.v4.content.ContextCompat
+import java.io.File
 
 /**
  *
@@ -17,19 +22,46 @@ import android.support.v4.app.FragmentManager
 class ImagePickerFragment : Fragment(), ImagePickerFunction {
 
     private val uri: Uri by lazy(LazyThreadSafetyMode.NONE) { builder!!.getFragmentActivity().getImageUri() }
+    private var builder: ImagePicker.Builder? = null
 
     /**
      * 跳转到系统图库
      */
     override fun jumpToPicture() {
-        builder?.getFragmentActivity()?.sJumpToPicture(REQUEST_CODE_PICTURE)
+        sJumpToPicture(REQUEST_CODE_PICTURE)
     }
 
     /**
      * 跳转到系统摄像机
      */
     override fun jumpToCamera() {
-        builder?.getFragmentActivity()?.sJumpToCamera(uri, REQUEST_CODE_CAMERA)
+        if (checkPermission()) {
+            loge("start camera")
+            sJumpToCamera(uri, REQUEST_CODE_CAMERA)
+        }
+    }
+
+    /**
+     * 检查权限
+     */
+    private fun checkPermission(): Boolean {
+        return if (ContextCompat.checkSelfPermission(activity!!, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(activity!!, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE), 0)
+            }
+            false
+        } else {
+            true
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+                grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+            jumpToCamera()
+        }
     }
 
     init {
@@ -43,12 +75,13 @@ class ImagePickerFragment : Fragment(), ImagePickerFunction {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        loge("resultCode:${resultCode == Activity.RESULT_OK}")
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 REQUEST_CODE_PICTURE -> {
                     if (data != null) {
                         if (builder?.isCrop() == true) {
-
+                            cropPicture(data.data)
                         } else {
                             onCallback(data.data)
                         }
@@ -56,10 +89,13 @@ class ImagePickerFragment : Fragment(), ImagePickerFunction {
                 }
                 REQUEST_CODE_CAMERA -> {
                     if (builder?.isCrop() == true) {
-
+                        cropPicture(uri)
                     } else {
                         onCallback(uri)
                     }
+                }
+                REQUEST_CODE_CROP -> {
+                    onCallback(data?.data)
                 }
                 else -> {
                 }
@@ -67,7 +103,23 @@ class ImagePickerFragment : Fragment(), ImagePickerFunction {
         }
     }
 
+    /**
+     * 裁剪图片
+     */
+    private fun cropPicture(uri: Uri?) {
+        if (uri == null) {
+            builder?.getImagePickerCallback()?.callback(uri)
+            return
+        }
+        activity?.apply {
+            val fileName = String.format("crop_%s.jpg", System.currentTimeMillis())
+            val cropFile = File(this.getCacheFile(), fileName)
+            sJumpToCrop(uri, Uri.fromFile(cropFile), REQUEST_CODE_CROP)
+        }
+    }
+
     private fun onCallback(uri: Uri?) {
+        loge("callback uri:$uri")
         builder?.getImagePickerCallback()?.callback(uri)
     }
 
@@ -80,11 +132,10 @@ class ImagePickerFragment : Fragment(), ImagePickerFunction {
         private const val REQUEST_CODE_CAMERA = 8006
         private const val REQUEST_CODE_CROP = 8007
 
-        private var builder: ImagePicker.Builder? = null
-
         fun createFragment(builder: ImagePicker.Builder): ImagePickerFragment {
-            this.builder = builder
-            return imagePickerFragmentManager.createFragment(builder.getFragmentActivity())
+            return imagePickerFragmentManager.createFragment(builder.getFragmentActivity()).also {
+                it.builder = builder
+            }
         }
     }
 
@@ -118,6 +169,7 @@ class ImagePickerFragment : Fragment(), ImagePickerFunction {
             }
             fragment = ImagePickerFragment()
             supportFragmentManager.beginTransaction().add(fragment, FRAGMENT_TAG).commitAllowingStateLoss()
+            supportFragmentManager.executePendingTransactions()
             imagePickerFragmentCache[fragmentActivity] = fragment
             return fragment
         }

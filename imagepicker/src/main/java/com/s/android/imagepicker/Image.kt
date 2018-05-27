@@ -1,6 +1,5 @@
 package com.s.android.imagepicker
 
-import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -8,7 +7,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import java.io.File
+import android.support.v4.app.Fragment
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -21,7 +20,7 @@ import java.util.*
 /**
  * 跳转到系统图库
  */
-fun Activity.sJumpToPicture(requestCode: Int) {
+fun Fragment.sJumpToPicture(requestCode: Int) {
     val intent = Intent()
     intent.type = "image/*"
     intent.action = Intent.ACTION_GET_CONTENT
@@ -32,7 +31,7 @@ fun Activity.sJumpToPicture(requestCode: Int) {
 /**
  * 跳转到系统摄像机
  */
-fun Activity.sJumpToCamera(uri: Uri, requestCode: Int) {
+fun Fragment.sJumpToCamera(uri: Uri, requestCode: Int) {
     val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
     intent.addCategory(Intent.CATEGORY_DEFAULT)
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -46,7 +45,7 @@ fun Activity.sJumpToCamera(uri: Uri, requestCode: Int) {
 /**
  * 跳转到系统裁剪
  */
-fun Activity.sJumpToCrop(uri: Uri, cropFile: File, requestCode: Int) {
+fun Fragment.sJumpToCrop(uri: Uri, outUri: Uri, requestCode: Int) {
     val intent = Intent("com.android.camera.action.CROP")
     intent.setDataAndType(uri, "image/*")
     intent.putExtra("crop", "true")
@@ -59,7 +58,7 @@ fun Activity.sJumpToCrop(uri: Uri, cropFile: File, requestCode: Int) {
         //添加这一句表示对目标应用临时授权该Uri所代表的文件
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     }
-    intent.putExtra("output", Uri.fromFile(cropFile))
+    intent.putExtra("output", outUri)
     startActivityForResult(intent, requestCode)
 }
 
