@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.s.android.imagepicker.ImagePicker
 import com.s.android.imagepicker.ImagePickerCallback
+import com.s.android.imagepicker.toBitmap
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -18,7 +19,7 @@ class MainActivity : AppCompatActivity() {
                 .setImagePickerCallback(object : ImagePickerCallback {
                     override fun callback(uri: Uri?) {
                         Log.e("MainActivity", "uri:$uri")
-                        imageView.setImageURI(uri)
+                        imageView.setImageBitmap(uri?.toBitmap(this@MainActivity))
                     }
                 })
                 .build()
