@@ -20,7 +20,7 @@ import java.io.File
  * @author android
  * @date   2018/5/25
  */
-class ImagePickerFragment : Fragment(), ImagePickerFunction {
+class ImagePickerFragment : Fragment() {
 
     private val uri: Uri by lazy(LazyThreadSafetyMode.NONE) { builder!!.getFragmentActivity().getImageUri() }
     private var builder: ImagePicker.Builder? = null
@@ -28,14 +28,14 @@ class ImagePickerFragment : Fragment(), ImagePickerFunction {
     /**
      * 跳转到系统图库
      */
-    override fun jumpToPicture() {
+    fun jumpToPicture() {
         sJumpToPicture(REQUEST_CODE_PICTURE)
     }
 
     /**
      * 跳转到系统摄像机
      */
-    override fun jumpToCamera() {
+    fun jumpToCamera() {
         if (checkPermission()) {
             loge("start camera")
             sJumpToCamera(uri, REQUEST_CODE_CAMERA)
@@ -89,7 +89,7 @@ class ImagePickerFragment : Fragment(), ImagePickerFunction {
                     }
                 }
                 REQUEST_CODE_CAMERA -> {
-//                    uri.toFile(context!!)?.checkPhoto()
+                    uri.toFile(context!!)?.checkPhoto()
                     if (builder?.isCrop() == true) {
                         cropPicture(uri)
                     } else {

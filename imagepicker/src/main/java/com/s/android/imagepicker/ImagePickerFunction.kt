@@ -17,4 +17,8 @@ interface ImagePickerFunction {
      */
     fun jumpToCamera()
 
+    /**
+     * 获取全部的图片
+     */
+    fun getAllPicture()
 }
