@@ -3,11 +3,11 @@ package com.s.android.simagepicker
 import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import com.s.android.imagepicker.ImagePicker
 import com.s.android.imagepicker.ImagePickerCallback
+import com.s.android.imagepicker.utils.compressBitmap
+import com.s.android.imagepicker.utils.toBitmap
 import kotlinx.android.synthetic.main.activity_main.*
-import java.io.File
 
 class MainActivity : AppCompatActivity() {
 
@@ -16,11 +16,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         val imagePicker = ImagePicker.Builder()
                 .from(this)
-                .setImagePickerCallback(object : ImagePickerCallback<File> {
-                    override fun callback(t: File?) {
-                        Log.e("MainActivity", "uri:$t")
-//                        imageView.setImageBitmap(uri?.toBitmap(this@MainActivity)?.compressBitmap(this@MainActivity))
-                        imageView.setImageURI(Uri.fromFile(t))
+                .setImagePickerCallback(object : ImagePickerCallback<Uri> {
+                    override fun callback(t: Uri?) {
+                        imageView.setImageBitmap(t?.toBitmap(this@MainActivity)?.compressBitmap(this@MainActivity))
                     }
                 })
                 .build()
