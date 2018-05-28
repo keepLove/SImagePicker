@@ -2,6 +2,7 @@ package com.s.android.imagepicker
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
+import com.s.android.imagepicker.utils.loge
 import java.lang.ref.WeakReference
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type

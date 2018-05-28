@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.support.v4.app.FragmentManager
 import android.support.v4.content.ContextCompat
+import com.s.android.imagepicker.utils.*
 import java.io.File
 
 /**
@@ -88,6 +89,7 @@ class ImagePickerFragment : Fragment(), ImagePickerFunction {
                     }
                 }
                 REQUEST_CODE_CAMERA -> {
+//                    uri.toFile(context!!)?.checkPhoto()
                     if (builder?.isCrop() == true) {
                         cropPicture(uri)
                     } else {

@@ -1,4 +1,4 @@
-package com.s.android.imagepicker
+package com.s.android.imagepicker.utils
 
 import android.util.Log
 
