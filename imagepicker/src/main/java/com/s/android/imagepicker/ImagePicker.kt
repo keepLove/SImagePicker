@@ -1,11 +1,14 @@
 package com.s.android.imagepicker
 
+import android.provider.MediaStore
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import com.s.android.imagepicker.utils.loge
+import java.io.File
 import java.lang.ref.WeakReference
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
+import kotlin.concurrent.thread
 
 /**
  *
@@ -30,6 +33,66 @@ class ImagePicker private constructor(private val builder: Builder) : ImagePicke
         imagePickerFragment.jumpToCamera()
     }
 
+    override fun getAllPicture() {
+        thread {
+            val groupMap = HashMap<String, ArrayList<String>>()
+            val groupList = arrayListOf<String>()
+            val mImageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+            val mContentResolver = builder.getFragmentActivity().contentResolver
+
+            //只查询jpeg和png的图片
+            val mCursor = mContentResolver.query(mImageUri, null,
+                    MediaStore.Images.Media.MIME_TYPE + "=? or "
+                            + MediaStore.Images.Media.MIME_TYPE + "=? or "
+                            + MediaStore.Images.Media.MIME_TYPE + "=? or "
+                            + MediaStore.Images.Media.MIME_TYPE + "=? or "
+                            + MediaStore.Images.Media.MIME_TYPE + "=?",
+                    arrayOf("image/jpeg", "image/png", "image/gif", "image/x-ms-bmp", "image/webp"), MediaStore.Images.Media.DATE_MODIFIED)
+
+            if (mCursor == null) {
+                builder.getFragmentActivity().runOnUiThread {
+                    builder.getImagePickerCallback()?.callback(null)
+                }
+                return@thread
+            }
+            val returnType = builder.getReturnType()
+            while (mCursor.moveToNext()) {
+                //获取图片的路径
+                val path = mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.DATA))
+
+                //获取该图片的父路径名
+                val parentName = File(path).parentFile.name
+
+                if (returnType == "Map") {
+                    //根据父路径名将图片放入到groupMap中
+                    if (!groupMap.containsKey(parentName)) {
+                        val chileList = ArrayList<String>()
+                        chileList.add(path)
+                        groupMap[parentName] = chileList
+                    } else {
+                        groupMap[parentName]?.add(path)
+                    }
+                } else if (returnType == "List") {
+                    groupList.add(path)
+                }
+            }
+            mCursor.close()
+            builder.getFragmentActivity().runOnUiThread {
+                when (returnType) {
+                    "Map" -> {
+                        builder.getImagePickerCallback()?.callback(groupMap)
+                    }
+                    "List" -> {
+                        builder.getImagePickerCallback()?.callback(groupList)
+                    }
+                    else -> {
+                        builder.getImagePickerCallback()?.callback(null)
+                    }
+                }
+            }
+        }
+    }
+
     class Builder {
 
         /**
@@ -45,16 +108,22 @@ class ImagePicker private constructor(private val builder: Builder) : ImagePicke
          */
         private var isCrop = false
         /**
-         * 返回类型{"File", "Bitmap", "Uri"}
+         * 返回类型{"File", "Bitmap", "Uri"、"Map"、"List"}
          */
         private var returnType = ""
 
+        /**
+         * 关联的fragment
+         */
         fun from(fragment: Fragment): Builder {
             val activity = fragment.activity
             checkNotNull(activity)
             return from(activity!!)
         }
 
+        /**
+         * 关联的FragmentActivity
+         */
         fun from(fragmentActivity: FragmentActivity): Builder {
             this.fragmentActivity = WeakReference(fragmentActivity)
             return this
@@ -68,12 +137,12 @@ class ImagePicker private constructor(private val builder: Builder) : ImagePicke
 
         /**
          * @param imagePickerCallback 结果返回接口
-         * @param T {File、Bitmap、Uri}
+         * @param T {File、Bitmap、Uri、Map、List}
          * @see java.io.File
          * @see android.graphics.Bitmap
          * @see android.net.Uri
          */
-        fun <T : Any> setImagePickerCallback(imagePickerCallback: ImagePickerCallback<T>): Builder {
+        fun <T : Any> callback(imagePickerCallback: ImagePickerCallback<T>): Builder {
             val type = imagePickerCallback::class.java.genericInterfaces[0] as ParameterizedType
             val clazz: Type = type.actualTypeArguments[0]
             loge("clazz type:$clazz")
@@ -81,10 +150,17 @@ class ImagePicker private constructor(private val builder: Builder) : ImagePicke
                 "class java.io.File" -> "File"
                 "class android.graphics.Bitmap" -> "Bitmap"
                 "class android.net.Uri" -> "Uri"
+                "java.util.Map<java.lang.String, ? extends java.util.List<? extends java.lang.String>>" -> "Map"
+                "java.util.List<? extends java.lang.String>" -> "List"
                 else -> ""
             }
             if (returnType.isEmpty()) {
-                throw RuntimeException("Generic Type is java.io.File or android.graphics.Bitmap or android.net.Uri")
+                throw RuntimeException("Generic Type is " +
+                        "java.io.File or " +
+                        "android.graphics.Bitmap or " +
+                        "android.net.Uri or " +
+                        "java.util.Map<java.lang.String, ? extends java.util.List<? extends java.lang.String>> or " +
+                        "java.util.List<? extends java.lang.String>")
             }
             this.imagePickerCallback = imagePickerCallback as ImagePickerCallback<Any>
             return this
