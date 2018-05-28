@@ -16,6 +16,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         val imagePicker = ImagePicker.Builder()
                 .from(this)
+                .setCrop(true)
                 .setImagePickerCallback(object : ImagePickerCallback<Uri> {
                     override fun callback(t: Uri?) {
                         imageView.setImageBitmap(t?.toBitmap(this@MainActivity)?.compressBitmap(this@MainActivity))

@@ -89,7 +89,7 @@ class ImagePickerFragment : Fragment(), ImagePickerFunction {
                     }
                 }
                 REQUEST_CODE_CAMERA -> {
-//                    uri.toFile(context!!)?.checkPhoto()
+                    uri.toFile(context!!)?.checkPhoto()
                     if (builder?.isCrop() == true) {
                         cropPicture(uri)
                     } else {
