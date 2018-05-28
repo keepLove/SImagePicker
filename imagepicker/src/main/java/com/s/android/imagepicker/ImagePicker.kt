@@ -3,6 +3,8 @@ package com.s.android.imagepicker
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import java.lang.ref.WeakReference
+import java.lang.reflect.ParameterizedType
+import java.lang.reflect.Type
 
 /**
  *
@@ -36,11 +38,15 @@ class ImagePicker private constructor(private val builder: Builder) : ImagePicke
         /**
          * 结果返回接口
          */
-        private var imagePickerCallback: ImagePickerCallback? = null
+        private var imagePickerCallback: ImagePickerCallback<Any>? = null
         /**
          * 是否需要裁剪
          */
         private var isCrop = false
+        /**
+         * 返回类型{"File", "Bitmap", "Uri"}
+         */
+        private var returnType = ""
 
         fun from(fragment: Fragment): Builder {
             val activity = fragment.activity
@@ -61,14 +67,34 @@ class ImagePicker private constructor(private val builder: Builder) : ImagePicke
 
         /**
          * @param imagePickerCallback 结果返回接口
+         * @param T {File、Bitmap、Uri}
+         * @see java.io.File
+         * @see android.graphics.Bitmap
+         * @see android.net.Uri
          */
-        fun setImagePickerCallback(imagePickerCallback: ImagePickerCallback): Builder {
-            this.imagePickerCallback = imagePickerCallback
+        fun <T : Any> setImagePickerCallback(imagePickerCallback: ImagePickerCallback<T>): Builder {
+            val type = imagePickerCallback::class.java.genericInterfaces[0] as ParameterizedType
+            val clazz: Type = type.actualTypeArguments[0]
+            loge("clazz type:$clazz")
+            this.returnType = when (clazz.toString()) {
+                "class java.io.File" -> "File"
+                "class android.graphics.Bitmap" -> "Bitmap"
+                "class android.net.Uri" -> "Uri"
+                else -> ""
+            }
+            if (returnType.isEmpty()) {
+                throw RuntimeException("Generic Type is java.io.File or android.graphics.Bitmap or android.net.Uri")
+            }
+            this.imagePickerCallback = imagePickerCallback as ImagePickerCallback<Any>
             return this
         }
 
-        fun getImagePickerCallback(): ImagePickerCallback? {
+        fun getImagePickerCallback(): ImagePickerCallback<Any>? {
             return this.imagePickerCallback
+        }
+
+        fun getReturnType(): String {
+            return this.returnType
         }
 
         /**

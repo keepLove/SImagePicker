@@ -6,8 +6,8 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.s.android.imagepicker.ImagePicker
 import com.s.android.imagepicker.ImagePickerCallback
-import com.s.android.imagepicker.toBitmap
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
 
@@ -16,10 +16,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         val imagePicker = ImagePicker.Builder()
                 .from(this)
-                .setImagePickerCallback(object : ImagePickerCallback {
-                    override fun callback(uri: Uri?) {
-                        Log.e("MainActivity", "uri:$uri")
-                        imageView.setImageBitmap(uri?.toBitmap(this@MainActivity))
+                .setImagePickerCallback(object : ImagePickerCallback<File> {
+                    override fun callback(t: File?) {
+                        Log.e("MainActivity", "uri:$t")
+//                        imageView.setImageBitmap(uri?.toBitmap(this@MainActivity)?.compressBitmap(this@MainActivity))
+                        imageView.setImageURI(Uri.fromFile(t))
                     }
                 })
                 .build()

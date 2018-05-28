@@ -59,11 +59,15 @@ fun Uri.toFile(context: Context): File? {
  * content://media/external/images/media/13550
  */
 fun Uri.toBitmap(context: Context): Bitmap {
-    val outFile = File(context.getCacheFile(), "${System.currentTimeMillis()}_compress.jpeg")
-    return MediaStore.Images.Media.getBitmap(context.contentResolver, this).compress(500f, 500f, outFile.absolutePath)
+    return MediaStore.Images.Media.getBitmap(context.contentResolver, this)
 }
 
-fun Bitmap.compress(maxWidth: Float, maxHeight: Float, desPath: String): Bitmap {
+/**
+ * 压缩
+ * @param maxWidth 最大宽度
+ * @param maxHeight 最大高度
+ */
+fun Bitmap.compressBitmap(context: Context, maxWidth: Float = 500f, maxHeight: Float = 500f): Bitmap {
     // 缩放图片的尺寸
     val w = this.width
     val h = this.height
@@ -80,6 +84,7 @@ fun Bitmap.compress(maxWidth: Float, maxHeight: Float, desPath: String): Bitmap 
     val desWidth = (w / be).toInt()
     val desHeight = (h / be).toInt()
     val bitmap = Bitmap.createScaledBitmap(this, desWidth, desHeight, true)
+    val desPath = File(context.getCacheFile(), "${System.currentTimeMillis()}_compress.jpeg")
     val fos = FileOutputStream(desPath)
     bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, fos)
     return bitmap

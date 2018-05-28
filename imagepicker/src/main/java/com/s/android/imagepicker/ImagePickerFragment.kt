@@ -108,7 +108,7 @@ class ImagePickerFragment : Fragment(), ImagePickerFunction {
      */
     private fun cropPicture(uri: Uri?) {
         if (uri == null) {
-            builder?.getImagePickerCallback()?.callback(uri)
+            builder?.getImagePickerCallback()?.callback(null)
             return
         }
         activity?.apply {
@@ -120,7 +120,21 @@ class ImagePickerFragment : Fragment(), ImagePickerFunction {
 
     private fun onCallback(uri: Uri?) {
         loge("callback uri:$uri")
-        builder?.getImagePickerCallback()?.callback(uri)
+        builder?.apply {
+            when (getReturnType()) {
+                "Uri" -> {
+                    getImagePickerCallback()?.callback(uri)
+                }
+                "File" -> {
+                    getImagePickerCallback()?.callback(uri?.toFile(this@ImagePickerFragment.context!!))
+                }
+                "Bitmap" -> {
+                    getImagePickerCallback()?.callback(uri?.toBitmap(this@ImagePickerFragment.context!!))
+                }
+                else -> {
+                }
+            }
+        }
     }
 
     companion object {

@@ -1,18 +1,17 @@
 package com.s.android.imagepicker
 
-import android.net.Uri
-
 /**
  *
  * @author android
  * @date   2018/5/25
+ *
+ * @param T {File、Bitmap、Uri}
  */
-interface ImagePickerCallback {
+interface ImagePickerCallback<in T : Any> {
 
     /**
      * 结果
      *
-     * @param T {File、Bitmap、Uri}
      */
-    fun callback(uri: Uri?)
+    fun callback(t: T?)
 }
