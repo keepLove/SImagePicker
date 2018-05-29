@@ -1,6 +1,9 @@
 # SImagePicker
 
-拍照
+### 使用
+> compile 'com.s.android:imagepicker:1.0'
+### 功能
+1.  拍照
 
 ```
 ImagePicker.Builder()
@@ -16,7 +19,7 @@ ImagePicker.Builder()
         .build()
         .jumpToCamera()
 ```
-从相册获取图片
+2.  从相册获取图片
 ```
 ImagePicker.Builder()
         .from(this)
@@ -31,7 +34,7 @@ ImagePicker.Builder()
         .build()
         .jumpToPicture()
 ```
-获取相册全部图片
+3.  获取相册全部图片
 ```
 ImagePicker.Builder()
         .from(this)
