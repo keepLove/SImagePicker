@@ -43,11 +43,33 @@ repositories {
     mavenCentral()
 }
 
-dokka {
-    outputFormat = 'html'
-    outputDirectory = "$buildDir/javadoc"
+task generateSourcesJar(type: Jar) {
+    group = 'jar'
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
 }
 
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    options.encoding = "UTF-8"
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task dokkaJavadoc(type: org.jetbrains.dokka.gradle.DokkaTask) {
+    outputFormat = "javadoc"
+    outputDirectory = javadoc.destinationDir
+}
+
+task generateJavadoc(type: Jar, dependsOn: dokkaJavadoc) {
+    group = 'jar'
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives generateJavadoc
+    archives generateSourcesJar
+}
 // https://github.com/novoda/bintray-release
 // https://github.com/HailouWang/bintray-release/wiki/%E9%85%8D%E7%BD%AEpublish%E9%97%AD%E5%8C%85
 
