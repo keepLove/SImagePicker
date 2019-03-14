@@ -1,3 +1,5 @@
+@file:JvmName("LogUtil")
+
 package com.s.android.imagepicker.utils
 
 import android.util.Log

@@ -1,3 +1,5 @@
+@file:JvmName("FileUtil")
+
 package com.s.android.imagepicker.utils
 
 import android.content.Context

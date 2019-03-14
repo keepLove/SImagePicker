@@ -22,8 +22,18 @@ import java.io.File
  */
 class ImagePickerFragment : Fragment() {
 
+    /**
+     * 拍照时的uri
+     */
     private val uri: Uri by lazy(LazyThreadSafetyMode.NONE) { builder!!.getFragmentActivity().getImageUri() }
+    /**
+     * 参数
+     */
     private var builder: ImagePicker.Builder? = null
+    /**
+     * 裁剪时的uri
+     */
+    private var cropUri: Uri? = null
 
     /**
      * 跳转到系统图库
@@ -97,7 +107,7 @@ class ImagePickerFragment : Fragment() {
                     }
                 }
                 REQUEST_CODE_CROP -> {
-                    onCallback(data?.data)
+                    onCallback(cropUri)
                 }
                 else -> {
                 }
@@ -116,7 +126,8 @@ class ImagePickerFragment : Fragment() {
         activity?.apply {
             val fileName = String.format("crop_%s.jpg", System.currentTimeMillis())
             val cropFile = File(this.getCacheFile(), fileName)
-            sJumpToCrop(uri, Uri.fromFile(cropFile), REQUEST_CODE_CROP)
+            cropUri = Uri.fromFile(cropFile)
+            sJumpToCrop(uri, cropUri!!, REQUEST_CODE_CROP)
         }
     }
 

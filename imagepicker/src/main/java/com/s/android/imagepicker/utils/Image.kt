@@ -1,3 +1,5 @@
+@file:JvmName("ImageUtil")
+
 package com.s.android.imagepicker.utils
 
 import android.content.Context
@@ -70,6 +72,7 @@ fun Fragment.sJumpToCrop(uri: Uri, outUri: Uri, requestCode: Int) {
  * @param maxWidth 最大宽度
  * @param maxHeight 最大高度
  */
+@Override
 fun Bitmap.compressBitmap(context: Context, maxWidth: Float = 500f, maxHeight: Float = 500f): Bitmap {
     // 缩放图片的尺寸
     val w = this.width

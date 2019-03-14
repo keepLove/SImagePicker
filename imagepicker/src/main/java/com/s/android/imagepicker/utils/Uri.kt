@@ -1,3 +1,5 @@
+@file:JvmName("UriUtil")
+
 package com.s.android.imagepicker.utils
 
 import android.content.ContentUris
