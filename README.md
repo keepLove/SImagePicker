@@ -1,7 +1,7 @@
 # SImagePicker
 
 ### 使用
-> compile 'com.s.android:imagepicker:1.0'
+> compile 'com.s.android:imagepicker:1.1'
 ### 功能
 1.  拍照
 
