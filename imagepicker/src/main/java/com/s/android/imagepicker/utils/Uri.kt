@@ -29,7 +29,7 @@ fun Context.getImageUri(): Uri {
     val cv = ContentValues()
     val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
     cv.put(MediaStore.Images.Media.TITLE, timeStamp)
-    return contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, cv)
+    return contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, cv)!!
 }
 
 /**

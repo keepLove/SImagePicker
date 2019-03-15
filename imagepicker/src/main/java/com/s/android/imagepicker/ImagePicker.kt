@@ -118,7 +118,7 @@ class ImagePicker private constructor(private val builder: Builder) : ImagePicke
         fun from(fragment: Fragment): Builder {
             val activity = fragment.activity
             checkNotNull(activity)
-            return from(activity!!)
+            return from(activity)
         }
 
         /**
@@ -132,7 +132,7 @@ class ImagePicker private constructor(private val builder: Builder) : ImagePicke
         fun getFragmentActivity(): FragmentActivity {
             val activity = fragmentActivity?.get()
             checkNotNull(activity) { "FragmentActivity can not be null. You should instance the FragmentActivity or v4.app.Fragment by ImagePicker.Builder().from()." }
-            return activity!!
+            return activity
         }
 
         /**
