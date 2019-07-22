@@ -1,8 +1,11 @@
-# SImagePicker
+# SImagePicker [![](https://img.shields.io/bintray/v/shuaijianwen/android/imagepicker.svg)](https://jcenter.bintray.com/com/s/android/imagepicker/)
 
-### 使用
-> implementation 'com.s.android:imagepicker:1.1'
-### 功能
+### Add
+
+> implementation 'com.s.android:imagepicker:latest.release'
+
+### Use
+
 1.  拍照
 
 ```
