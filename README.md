@@ -1,4 +1,5 @@
-# SImagePicker [![](https://img.shields.io/bintray/v/shuaijianwen/android/imagepicker.svg)](https://jcenter.bintray.com/com/s/android/imagepicker/)
+# SImagePicker [![](https://img.shields.io/bintray/v/shuaijianwen/android/imagepicker.svg)](https://jcenter.bintray.com/com/s/android/imagepicker/) 
+[ ![Download](https://api.bintray.com/packages/shuaijianwen/android/imagepicker/images/download.svg?version=1.1) ](https://bintray.com/shuaijianwen/android/imagepicker/1.1/link)
 
 ### Add
 
