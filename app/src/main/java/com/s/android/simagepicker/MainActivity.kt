@@ -17,8 +17,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         button.setOnClickListener {
-            ImagePicker.Builder()
-                    .from(this)
+            ImagePicker.Builder(this)
                     // 是否裁剪
                     .setCrop(true)
                     // 监听，返回Uri、Bitmap、File
@@ -31,8 +30,7 @@ class MainActivity : AppCompatActivity() {
                     .jumpToCamera()
         }
         button2.setOnClickListener {
-            ImagePicker.Builder()
-                    .from(this)
+            ImagePicker.Builder(this)
                     // 是否裁剪
                     .setCrop(true)
                     // 监听，返回Uri、Bitmap、File
@@ -45,8 +43,7 @@ class MainActivity : AppCompatActivity() {
                     .jumpToPicture()
         }
         button3.setOnClickListener {
-            ImagePicker.Builder()
-                    .from(this)
+            ImagePicker.Builder(this)
                     // 监听，返回Map<String, List<String>>、List<String>
                     .callback(object : ImagePickerCallback<Map<String, List<String>>> {
                         override fun callback(t: Map<String, List<String>>?) {

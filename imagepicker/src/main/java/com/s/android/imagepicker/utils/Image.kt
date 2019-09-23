@@ -7,10 +7,10 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
-import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.support.media.ExifInterface
 import android.support.v4.app.Fragment
 import java.io.File
 import java.io.FileOutputStream

@@ -8,7 +8,6 @@ import java.io.File
 import java.lang.ref.WeakReference
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
-import kotlin.concurrent.thread
 
 /**
  *
@@ -34,65 +33,66 @@ class ImagePicker private constructor(private val builder: Builder) : ImagePicke
     }
 
     override fun getAllPicture() {
-        thread {
-            val groupMap = HashMap<String, ArrayList<String>>()
-            val groupList = arrayListOf<String>()
-            val mImageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-            val mContentResolver = builder.getFragmentActivity().contentResolver
+        val groupMap = HashMap<String, ArrayList<String>>()
+        val groupList = arrayListOf<String>()
+        val mImageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        val mContentResolver = builder.getFragmentActivity().contentResolver
 
-            //只查询jpeg和png的图片
-            val mCursor = mContentResolver.query(mImageUri, null,
-                    MediaStore.Images.Media.MIME_TYPE + "=? or "
-                            + MediaStore.Images.Media.MIME_TYPE + "=? or "
-                            + MediaStore.Images.Media.MIME_TYPE + "=? or "
-                            + MediaStore.Images.Media.MIME_TYPE + "=? or "
-                            + MediaStore.Images.Media.MIME_TYPE + "=?",
-                    arrayOf("image/jpeg", "image/png", "image/gif", "image/x-ms-bmp", "image/webp"), MediaStore.Images.Media.DATE_MODIFIED)
+        //只查询jpeg和png的图片
+        val mCursor = mContentResolver.query(mImageUri, null,
+                MediaStore.Images.Media.MIME_TYPE + "=? or "
+                        + MediaStore.Images.Media.MIME_TYPE + "=? or "
+                        + MediaStore.Images.Media.MIME_TYPE + "=? or "
+                        + MediaStore.Images.Media.MIME_TYPE + "=? or "
+                        + MediaStore.Images.Media.MIME_TYPE + "=?",
+                arrayOf("image/jpeg", "image/png", "image/gif", "image/x-ms-bmp", "image/webp"), MediaStore.Images.Media.DATE_MODIFIED)
 
-            if (mCursor == null) {
-                builder.getFragmentActivity().runOnUiThread {
-                    builder.getImagePickerCallback()?.callback(null)
-                }
-                return@thread
-            }
-            val returnType = builder.getReturnType()
-            while (mCursor.moveToNext()) {
-                //获取图片的路径
-                val path = mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.DATA))
-
-                //获取该图片的父路径名
-                val parentName = File(path).parentFile.name
-
-                if (returnType == "Map") {
-                    //根据父路径名将图片放入到groupMap中
-                    if (!groupMap.containsKey(parentName)) {
-                        val chileList = ArrayList<String>()
-                        chileList.add(path)
-                        groupMap[parentName] = chileList
-                    } else {
-                        groupMap[parentName]?.add(path)
-                    }
-                } else if (returnType == "List") {
-                    groupList.add(path)
-                }
-            }
-            mCursor.close()
+        if (mCursor == null) {
             builder.getFragmentActivity().runOnUiThread {
-                when (returnType) {
-                    "Map" -> {
-                        builder.getImagePickerCallback()?.callback(groupMap)
-                    }
-                    "List" -> {
-                        builder.getImagePickerCallback()?.callback(groupList)
-                    }
-                    else -> {
-                        builder.getImagePickerCallback()?.callback(null)
-                    }
+                builder.getImagePickerCallback()?.callback(null)
+            }
+            return
+        }
+        val returnType = builder.getReturnType()
+        while (mCursor.moveToNext()) {
+            //获取图片的路径
+            val path = mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.DATA))
+
+            //获取该图片的父路径名
+            val parentName = File(path).parentFile.name
+
+            if (returnType == "Map") {
+                //根据父路径名将图片放入到groupMap中
+                if (!groupMap.containsKey(parentName)) {
+                    val chileList = ArrayList<String>()
+                    chileList.add(path)
+                    groupMap[parentName] = chileList
+                } else {
+                    groupMap[parentName]?.add(path)
+                }
+            } else if (returnType == "List") {
+                groupList.add(path)
+            }
+        }
+        mCursor.close()
+        builder.getFragmentActivity().runOnUiThread {
+            when (returnType) {
+                "Map" -> {
+                    builder.getImagePickerCallback()?.callback(groupMap)
+                }
+                "List" -> {
+                    builder.getImagePickerCallback()?.callback(groupList)
+                }
+                else -> {
+                    builder.getImagePickerCallback()?.callback(null)
                 }
             }
         }
     }
 
+    /**
+     * Builder
+     */
     class Builder {
 
         /**
@@ -112,23 +112,22 @@ class ImagePicker private constructor(private val builder: Builder) : ImagePicke
          */
         private var returnType = ""
 
-        /**
-         * 关联的fragment
-         */
-        fun from(fragment: Fragment): Builder {
+        constructor(fragment: Fragment) {
             val activity = fragment.activity
             checkNotNull(activity)
-            return from(activity)
+            this.fragmentActivity = WeakReference(activity)
         }
 
         /**
-         * 关联的FragmentActivity
+         * FragmentActivity
          */
-        fun from(fragmentActivity: FragmentActivity): Builder {
+        constructor(fragmentActivity: FragmentActivity) {
             this.fragmentActivity = WeakReference(fragmentActivity)
-            return this
         }
 
+        /**
+         * FragmentActivity
+         */
         fun getFragmentActivity(): FragmentActivity {
             val activity = fragmentActivity?.get()
             checkNotNull(activity) { "FragmentActivity can not be null. You should instance the FragmentActivity or v4.app.Fragment by ImagePicker.Builder().from()." }
