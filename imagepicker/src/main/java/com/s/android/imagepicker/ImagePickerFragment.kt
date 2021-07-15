@@ -13,7 +13,6 @@ import android.support.v4.app.FragmentActivity
 import android.support.v4.app.FragmentManager
 import android.support.v4.content.ContextCompat
 import com.s.android.imagepicker.utils.*
-import java.io.File
 
 /**
  *
@@ -25,11 +24,15 @@ class ImagePickerFragment : Fragment() {
     /**
      * 拍照时的uri
      */
-    private val uri: Uri by lazy(LazyThreadSafetyMode.NONE) { builder!!.getFragmentActivity().getImageUri() }
+    private val uri: Uri by lazy(LazyThreadSafetyMode.NONE) {
+        builder!!.getFragmentActivity().getImageUri()
+    }
+
     /**
      * 参数
      */
     private var builder: ImagePicker.Builder? = null
+
     /**
      * 裁剪时的uri
      */
@@ -56,10 +59,21 @@ class ImagePickerFragment : Fragment() {
      * 检查权限
      */
     private fun checkPermission(): Boolean {
-        return if (ContextCompat.checkSelfPermission(activity!!, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(activity!!, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        return if (
+            ContextCompat.checkSelfPermission(
+                activity!!, Manifest.permission.CAMERA
+            ) != PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(
+                activity!!, Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE), 0)
+                requestPermissions(
+                    arrayOf(
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    ), 0
+                )
             }
             false
         } else {
@@ -67,10 +81,15 @@ class ImagePickerFragment : Fragment() {
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
-                grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+            grantResults[1] == PackageManager.PERMISSION_GRANTED
+        ) {
             jumpToCamera()
         }
     }
@@ -124,9 +143,12 @@ class ImagePickerFragment : Fragment() {
             return
         }
         activity?.apply {
-            val fileName = String.format("crop_%s.jpg", System.currentTimeMillis())
-            val cropFile = File(this.getCacheFile(), fileName)
-            cropUri = Uri.fromFile(cropFile)
+            val cropFile = getCropFile()
+            cropUri = if (Build.VERSION.SDK_INT >= 30) {
+                crop_uri
+            } else {
+                Uri.fromFile(cropFile)
+            }
             sJumpToCrop(uri, cropUri!!, REQUEST_CODE_CROP)
         }
     }
@@ -172,6 +194,7 @@ class ImagePickerFragment : Fragment() {
          * 缓存
          */
         private val imagePickerFragmentCache = hashMapOf<Activity, ImagePickerFragment>()
+
         /**
          * 是否正在添加fragment
          */
@@ -195,7 +218,8 @@ class ImagePickerFragment : Fragment() {
                 fragmentActivity.application.registerActivityLifecycleCallbacks(activityCallbacks)
             }
             fragment = ImagePickerFragment()
-            supportFragmentManager.beginTransaction().add(fragment, FRAGMENT_TAG).commitAllowingStateLoss()
+            supportFragmentManager.beginTransaction().add(fragment, FRAGMENT_TAG)
+                .commitAllowingStateLoss()
             supportFragmentManager.executePendingTransactions()
             imagePickerFragmentCache[fragmentActivity] = fragment
             return fragment
