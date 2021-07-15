@@ -3,6 +3,7 @@
 package com.s.android.imagepicker.utils
 
 import android.content.Context
+import android.os.Build
 import android.os.Environment
 import java.io.File
 
@@ -15,13 +16,18 @@ import java.io.File
  * 获取缓存文件夹路径
  */
 fun Context.getCacheFile(): File {
-    var file = externalCacheDir
+    var file = if (Build.VERSION.SDK_INT >= 30) {
+        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+    } else {
+        getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+    }
     if (file == null) {
         file = filesDir
     }
     if (file == null) {
-        file = File(Environment.getExternalStorageDirectory(), "ImagePicker")
+        file = externalCacheDir
     }
+    file = File(file, "ImagePicker")
     if (!file.exists()) {
         val mkdirs = file.mkdirs()
         if (!mkdirs) {
