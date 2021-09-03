@@ -8,10 +8,10 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
-import android.support.v4.app.FragmentManager
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import com.s.android.imagepicker.utils.*
 
 /**
@@ -249,22 +249,22 @@ class ImagePickerFragment : Fragment() {
         }
 
         private val activityCallbacks = object : Application.ActivityLifecycleCallbacks {
-            override fun onActivityPaused(activity: Activity?) {
+            override fun onActivityPaused(activity: Activity) {
             }
 
-            override fun onActivityResumed(activity: Activity?) {
+            override fun onActivityResumed(activity: Activity) {
             }
 
-            override fun onActivityStarted(activity: Activity?) {
+            override fun onActivityStarted(activity: Activity) {
             }
 
-            override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {
+            override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
             }
 
-            override fun onActivityStopped(activity: Activity?) {
+            override fun onActivityStopped(activity: Activity) {
             }
 
-            override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
+            override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
             }
 
             override fun onActivityDestroyed(activity: Activity) {

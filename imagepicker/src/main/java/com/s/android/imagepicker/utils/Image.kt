@@ -10,17 +10,11 @@ import android.graphics.Matrix
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import android.support.media.ExifInterface
-import android.support.v4.app.Fragment
+import androidx.exifinterface.media.ExifInterface
+import androidx.fragment.app.Fragment
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-
-/**
- *
- * @author android
- * @date   2018/5/25
- */
 
 /**
  * 跳转到系统图库
@@ -73,7 +67,11 @@ fun Fragment.sJumpToCrop(uri: Uri, outUri: Uri, requestCode: Int) {
  * @param maxHeight 最大高度
  */
 @Override
-fun Bitmap.compressBitmap(context: Context, maxWidth: Float = 500f, maxHeight: Float = 500f): Bitmap {
+fun Bitmap.compressBitmap(
+    context: Context,
+    maxWidth: Float = 500f,
+    maxHeight: Float = 500f
+): Bitmap {
     // 缩放图片的尺寸
     val w = this.width
     val h = this.height
@@ -103,7 +101,10 @@ fun File.checkPhoto() {
     var degree: Int
     try {
         val exifInterface = ExifInterface(this.path)
-        degree = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+        degree = exifInterface.getAttributeInt(
+            ExifInterface.TAG_ORIENTATION,
+            ExifInterface.ORIENTATION_NORMAL
+        )
         if (degree != 0) {
             when (degree) {
                 ExifInterface.ORIENTATION_ROTATE_90 -> degree = 90
@@ -123,7 +124,8 @@ fun File.checkPhoto() {
             val matrix = Matrix()
             matrix.reset()
             matrix.postRotate(degree.toFloat())
-            var bitmap1: Bitmap? = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, false)
+            var bitmap1: Bitmap? =
+                Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, false)
             if (bitmap1 == null) {
                 bitmap1 = bitmap
             }
