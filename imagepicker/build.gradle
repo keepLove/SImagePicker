@@ -1,6 +1,9 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'maven-publish'
+
+group = 'com.s.android'
 
 android {
     compileSdkVersion 30
@@ -8,6 +11,8 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 30
+        versionCode 6
+        versionName "1.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -35,13 +40,3 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
-
-//publish {
-//    userOrg = 'shuaijianwen'
-//    repoName = 'android'
-//    groupId = 'com.s.android'
-//    artifactId = 'imagepicker'
-//    publishVersion = '1.4'
-//    desc = 'The library which choosing pictures from camera or gallery in Android.'
-//    website = 'https://github.com/keepLove/SImagePicker'
-//}
