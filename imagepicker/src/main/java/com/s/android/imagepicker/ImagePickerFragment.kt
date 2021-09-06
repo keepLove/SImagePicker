@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import com.s.android.imagepicker.listener.ImagePickerRequest
 import com.s.android.imagepicker.utils.*
 
 /**
@@ -19,7 +20,7 @@ import com.s.android.imagepicker.utils.*
  * @author android
  * @date   2018/5/25
  */
-class ImagePickerFragment : Fragment() {
+internal class ImagePickerFragment : Fragment() {
 
     /**
      * 拍照时的uri
@@ -31,7 +32,7 @@ class ImagePickerFragment : Fragment() {
     /**
      * 参数
      */
-    private var builder: ImagePicker.Builder? = null
+    private var builder: ImagePickerRequest? = null
 
     /**
      * 裁剪时的uri
@@ -61,10 +62,10 @@ class ImagePickerFragment : Fragment() {
     private fun checkPermission(): Boolean {
         return if (
             ContextCompat.checkSelfPermission(
-                activity!!, Manifest.permission.CAMERA
+                requireContext(), Manifest.permission.CAMERA
             ) != PackageManager.PERMISSION_GRANTED ||
             ContextCompat.checkSelfPermission(
-                activity!!, Manifest.permission.WRITE_EXTERNAL_STORAGE
+                requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -110,7 +111,7 @@ class ImagePickerFragment : Fragment() {
             when (requestCode) {
                 REQUEST_CODE_PICTURE -> {
                     if (data != null) {
-                        if (builder?.isCrop() == true) {
+                        if (builder?.isCrop == true) {
                             cropPicture(data.data)
                         } else {
                             onCallback(data.data)
@@ -118,8 +119,8 @@ class ImagePickerFragment : Fragment() {
                     }
                 }
                 REQUEST_CODE_CAMERA -> {
-                    uri.toFile(context!!)?.checkPhoto()
-                    if (builder?.isCrop() == true) {
+                    uri.toFile(requireContext())?.checkPhoto()
+                    if (builder?.isCrop == true) {
                         cropPicture(uri)
                     } else {
                         onCallback(uri)
@@ -139,7 +140,7 @@ class ImagePickerFragment : Fragment() {
      */
     private fun cropPicture(uri: Uri?) {
         if (uri == null) {
-            builder?.getImagePickerCallback()?.callback(null)
+            builder?.imagePickerCallback?.callback(null)
             return
         }
         activity?.apply {
@@ -156,15 +157,15 @@ class ImagePickerFragment : Fragment() {
     private fun onCallback(uri: Uri?) {
         loge("callback uri:$uri")
         builder?.apply {
-            when (getReturnType()) {
+            when (returnType) {
                 "Uri" -> {
-                    getImagePickerCallback()?.callback(uri)
+                    imagePickerCallback?.callback(uri)
                 }
                 "File" -> {
-                    getImagePickerCallback()?.callback(uri?.toFile(this@ImagePickerFragment.context!!))
+                    imagePickerCallback?.callback(uri?.toFile(this@ImagePickerFragment.requireContext()))
                 }
                 "Bitmap" -> {
-                    getImagePickerCallback()?.callback(uri?.toBitmap(this@ImagePickerFragment.context!!))
+                    imagePickerCallback?.callback(uri?.toBitmap(this@ImagePickerFragment.requireContext()))
                 }
                 else -> {
                 }
@@ -181,7 +182,7 @@ class ImagePickerFragment : Fragment() {
         private const val REQUEST_CODE_CAMERA = 8006
         private const val REQUEST_CODE_CROP = 8007
 
-        fun createFragment(builder: ImagePicker.Builder): ImagePickerFragment {
+        fun createFragment(builder: ImagePickerRequest): ImagePickerFragment {
             return imagePickerFragmentManager.createFragment(builder.getFragmentActivity()).also {
                 it.builder = builder
             }

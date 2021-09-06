@@ -10,9 +10,9 @@ import android.util.Log
  * @date   2018/5/27
  */
 var debug = true
-const val TAG = "ImagePicker"
+internal const val TAG = "ImagePicker"
 
-fun loge(message: String) {
+internal fun loge(message: String) {
     if (debug) {
         Log.e(TAG, message)
     }
