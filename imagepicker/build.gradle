@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.github.keepLove'
-version = "1.5"
+version = "1.6"
 
 android {
     compileSdkVersion 30
@@ -61,7 +61,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.github.keepLove'
                 artifactId = 'SImagePicker'
-                version = '1.5'
+                version = '1.6'
             }
         }
     }
