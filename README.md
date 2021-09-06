@@ -1,12 +1,34 @@
-# SImagePicker [![](https://img.shields.io/bintray/v/shuaijianwen/android/imagepicker.svg)](https://jcenter.bintray.com/com/s/android/imagepicker/) [ ![Download](https://api.bintray.com/packages/shuaijianwen/android/imagepicker/images/download.svg?version=1.3) ](https://bintray.com/shuaijianwen/android/imagepicker/1.3/link)
+[![SImagePicker](https://jitpack.io/v/com.github.keepLove/SImagePicker.svg)](https://jitpack.io/#com.github.keepLove/SImagePicker)
 
-### Add
+## Dependency
 
-> implementation 'com.s.android:imagepicker:latest.release'
+#### Step 1. Add the JitPack repository to your build file
 
-### Use
+Add it in your root build.gradle at the end of repositories:
 
-1.  拍照
+
+```
+    allprojects {
+    	repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+```
+
+#### Step 2. Add the dependency
+
+
+```
+    dependencies {
+        implementation 'com.github.keepLove:SImagePicker:Tag'
+	}
+```
+
+## Use
+
+### 1.  拍照
+
 
 ```
 ImagePicker.Builder(this)
@@ -21,7 +43,10 @@ ImagePicker.Builder(this)
         .build()
         .jumpToCamera()
 ```
-2.  从相册获取图片
+
+### 2.  从相册获取图片
+
+
 ```
 ImagePicker.Builder(this)
         // 是否裁剪
@@ -35,7 +60,9 @@ ImagePicker.Builder(this)
         .build()
         .jumpToPicture()
 ```
-3.  获取相册全部图片
+
+### 3.  获取相册全部图片
+
 ```
 ImagePicker.Builder(this)
         // 监听，返回Map<String, List<String>>、List<String>
