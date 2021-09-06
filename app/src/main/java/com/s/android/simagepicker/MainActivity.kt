@@ -21,7 +21,6 @@ class MainActivity : AppCompatActivity() {
             ImagePicker.with(this)
                 // 是否裁剪
                 .setCrop(true)
-                // 监听，返回Uri、Bitmap、File
                 .setListener(object : ImagePickerListener<Uri> {
                     override fun callback(t: Uri?) {
                         mBinding.imageView.setImageBitmap(
@@ -36,7 +35,6 @@ class MainActivity : AppCompatActivity() {
                 // 是否裁剪
                 .setCrop(true)
                 .asBitmap()
-                // 监听，返回Uri、Bitmap、File
                 .setListener(object : ImagePickerListener<Bitmap> {
                     override fun callback(t: Bitmap?) {
                         mBinding.imageView.setImageBitmap(t?.compressBitmap(this@MainActivity))

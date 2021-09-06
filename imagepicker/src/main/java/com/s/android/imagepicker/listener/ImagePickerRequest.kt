@@ -30,9 +30,9 @@ class ImagePickerRequest internal constructor() : ImagePickerRequests<Uri> {
     internal var isCrop = false
 
     /**
-     * 返回类型{"File", "Bitmap", "Uri"}
+     * 返回类型
      */
-    internal var returnType = ""
+    internal var returnType = ImagePickerReturnType.Uri
 
     internal fun getFragmentActivity(): FragmentActivity {
         val activity = fragmentActivity?.get()
@@ -49,18 +49,18 @@ class ImagePickerRequest internal constructor() : ImagePickerRequests<Uri> {
     }
 
     override fun setListener(imagePickerCallback: ImagePickerListener<Uri>): ImagePicker {
-        this.returnType = "Uri"
+        this.returnType = ImagePickerReturnType.Uri
         this.imagePickerCallback = imagePickerCallback as ImagePickerListener<Any>
         return ImagePicker(this)
     }
 
     fun asBitmap(): ImagePickerRequests<Bitmap> {
-        this.returnType = "Bitmap"
+        this.returnType = ImagePickerReturnType.Bitmap
         return ImagePickerBitmapRequest(this)
     }
 
     fun asFile(): ImagePickerRequests<File> {
-        this.returnType = "File"
+        this.returnType = ImagePickerReturnType.File
         return ImagePickerFileRequest(this)
     }
 
@@ -70,7 +70,7 @@ private class ImagePickerBitmapRequest(private val request: ImagePickerRequest) 
     ImagePickerRequests<Bitmap> {
 
     override fun setListener(imagePickerCallback: ImagePickerListener<Bitmap>): ImagePicker {
-        request.returnType = "Bitmap"
+        request.returnType = ImagePickerReturnType.Bitmap
         request.imagePickerCallback = imagePickerCallback as ImagePickerListener<Any>
         return ImagePicker(request)
     }
@@ -80,7 +80,7 @@ private class ImagePickerFileRequest(private val request: ImagePickerRequest) :
     ImagePickerRequests<File> {
 
     override fun setListener(imagePickerCallback: ImagePickerListener<File>): ImagePicker {
-        request.returnType = "File"
+        request.returnType = ImagePickerReturnType.File
         request.imagePickerCallback = imagePickerCallback as ImagePickerListener<Any>
         return ImagePicker(request)
     }

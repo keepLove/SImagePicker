@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.s.android.imagepicker.listener.ImagePickerRequest
+import com.s.android.imagepicker.listener.ImagePickerReturnType
 import com.s.android.imagepicker.utils.*
 
 /**
@@ -158,16 +159,14 @@ internal class ImagePickerFragment : Fragment() {
         loge("callback uri:$uri")
         builder?.apply {
             when (returnType) {
-                "Uri" -> {
+                ImagePickerReturnType.Uri -> {
                     imagePickerCallback?.callback(uri)
                 }
-                "File" -> {
+                ImagePickerReturnType.File -> {
                     imagePickerCallback?.callback(uri?.toFile(this@ImagePickerFragment.requireContext()))
                 }
-                "Bitmap" -> {
+                ImagePickerReturnType.Bitmap -> {
                     imagePickerCallback?.callback(uri?.toBitmap(this@ImagePickerFragment.requireContext()))
-                }
-                else -> {
                 }
             }
         }
