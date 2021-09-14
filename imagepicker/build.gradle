@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.github.keepLove'
-version = "2.0"
+version = "2.1"
 
 android {
     compileSdkVersion 30
@@ -42,7 +42,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "androidx.appcompat:appcompat:1.3.0"
+    compileOnly "androidx.appcompat:appcompat:1.3.0"
     implementation 'androidx.exifinterface:exifinterface:1.3.2'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
@@ -56,7 +56,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.github.keepLove'
                 artifactId = 'SImagePicker'
-                version = '2.0'
+                version = '2.1'
             }
         }
     }

@@ -14,6 +14,9 @@ class ImagePicker internal constructor(private val request: ImagePickerRequest) 
 
     companion object {
 
+        /**
+         * 获取FragmentActivity
+         */
         fun with(fragment: Fragment): ImagePickerRequest {
             val activity = fragment.activity
             checkNotNull(activity)
@@ -22,6 +25,9 @@ class ImagePicker internal constructor(private val request: ImagePickerRequest) 
             return request
         }
 
+        /**
+         * 在FragmentActivity中新建一个fragment使用
+         */
         fun with(fragmentActivity: FragmentActivity): ImagePickerRequest {
             val request = ImagePickerRequest()
             request.fragmentActivity = WeakReference(fragmentActivity)

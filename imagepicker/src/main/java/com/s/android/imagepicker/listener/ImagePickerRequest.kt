@@ -7,11 +7,6 @@ import com.s.android.imagepicker.ImagePicker
 import java.io.File
 import java.lang.ref.WeakReference
 
-interface ImagePickerRequests<T : Any> {
-
-    fun setListener(imagePickerCallback: ImagePickerListener<T>): ImagePicker
-}
-
 class ImagePickerRequest internal constructor() : ImagePickerRequests<Uri> {
 
     /**
@@ -48,17 +43,26 @@ class ImagePickerRequest internal constructor() : ImagePickerRequests<Uri> {
         return this
     }
 
-    override fun setListener(imagePickerCallback: ImagePickerListener<Uri>): ImagePicker {
+    /**
+     * 设置监听回调
+     */
+    override fun setListener(imagePickerListener: ImagePickerListener<Uri>): ImagePicker {
         this.returnType = ImagePickerReturnType.Uri
-        this.imagePickerCallback = imagePickerCallback as ImagePickerListener<Any>
+        this.imagePickerCallback = imagePickerListener as ImagePickerListener<Any>
         return ImagePicker(this)
     }
 
+    /**
+     * 转为[Bitmap]
+     */
     fun asBitmap(): ImagePickerRequests<Bitmap> {
         this.returnType = ImagePickerReturnType.Bitmap
         return ImagePickerBitmapRequest(this)
     }
 
+    /**
+     * 转为[File]
+     */
     fun asFile(): ImagePickerRequests<File> {
         this.returnType = ImagePickerReturnType.File
         return ImagePickerFileRequest(this)
@@ -69,9 +73,9 @@ class ImagePickerRequest internal constructor() : ImagePickerRequests<Uri> {
 private class ImagePickerBitmapRequest(private val request: ImagePickerRequest) :
     ImagePickerRequests<Bitmap> {
 
-    override fun setListener(imagePickerCallback: ImagePickerListener<Bitmap>): ImagePicker {
+    override fun setListener(imagePickerListener: ImagePickerListener<Bitmap>): ImagePicker {
         request.returnType = ImagePickerReturnType.Bitmap
-        request.imagePickerCallback = imagePickerCallback as ImagePickerListener<Any>
+        request.imagePickerCallback = imagePickerListener as ImagePickerListener<Any>
         return ImagePicker(request)
     }
 }
@@ -79,9 +83,9 @@ private class ImagePickerBitmapRequest(private val request: ImagePickerRequest) 
 private class ImagePickerFileRequest(private val request: ImagePickerRequest) :
     ImagePickerRequests<File> {
 
-    override fun setListener(imagePickerCallback: ImagePickerListener<File>): ImagePicker {
+    override fun setListener(imagePickerListener: ImagePickerListener<File>): ImagePicker {
         request.returnType = ImagePickerReturnType.File
-        request.imagePickerCallback = imagePickerCallback as ImagePickerListener<Any>
+        request.imagePickerCallback = imagePickerListener as ImagePickerListener<Any>
         return ImagePicker(request)
     }
 }
