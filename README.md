@@ -1,4 +1,4 @@
-[![SImagePicker](https://jitpack.io/v/com.github.keepLove/SImagePicker.svg)](https://jitpack.io/#com.github.keepLove/SImagePicker)
+#ImagePicker 拍照和相册获取图片 [![SImagePicker](https://jitpack.io/v/com.github.keepLove/SImagePicker.svg)](https://jitpack.io/#com.github.keepLove/SImagePicker)
 
 ## Dependency
 
