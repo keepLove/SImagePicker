@@ -5,17 +5,17 @@ plugins {
     id 'maven-publish'
 }
 
-group = 'com.github.keepLove'
-version = "2.1"
+group = imagepicker.groupId
+version = imagepicker.versionName
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion imagepicker.compileSdk
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 30
-        versionCode 6
-        versionName version
+        minSdkVersion imagepicker.minSdk
+        targetSdkVersion imagepicker.targetSdk
+        versionCode imagepicker.versionCode
+        versionName imagepicker.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -54,9 +54,9 @@ afterEvaluate {
         publications {
             release(MavenPublication) {
                 from components.release
-                groupId = 'com.github.keepLove'
-                artifactId = 'SImagePicker'
-                version = '2.1'
+                groupId = imagepicker.groupId
+                artifactId = imagepicker.artifactId
+                version = imagepicker.versionName
             }
         }
     }
