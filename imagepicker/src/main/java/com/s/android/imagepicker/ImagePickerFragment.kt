@@ -108,29 +108,37 @@ internal class ImagePickerFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         loge("resultCode:${resultCode == Activity.RESULT_OK}")
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                REQUEST_CODE_PICTURE -> {
-                    if (data != null) {
-                        if (builder?.isCrop == true) {
-                            cropPicture(data.data)
-                        } else {
-                            onCallback(data.data)
-                        }
+        when (requestCode) {
+            REQUEST_CODE_PICTURE -> {
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    if (builder?.isCrop == true) {
+                        cropPicture(data.data)
+                    } else {
+                        onCallback(data.data)
                     }
+                } else {
+                    onCallback(null)
                 }
-                REQUEST_CODE_CAMERA -> {
+            }
+
+            REQUEST_CODE_CAMERA -> {
+                if (resultCode == Activity.RESULT_OK) {
                     uri.toFile(requireContext())?.checkPhoto()
                     if (builder?.isCrop == true) {
                         cropPicture(uri)
                     } else {
                         onCallback(uri)
                     }
+                } else {
+                    onCallback(null)
                 }
-                REQUEST_CODE_CROP -> {
+            }
+
+            REQUEST_CODE_CROP -> {
+                if (resultCode == Activity.RESULT_OK) {
                     onCallback(cropUri)
-                }
-                else -> {
+                } else {
+                    onCallback(null)
                 }
             }
         }
@@ -162,9 +170,11 @@ internal class ImagePickerFragment : Fragment() {
                 ImagePickerReturnType.Uri -> {
                     imagePickerCallback?.callback(uri)
                 }
+
                 ImagePickerReturnType.File -> {
                     imagePickerCallback?.callback(uri?.toFile(this@ImagePickerFragment.requireContext()))
                 }
+
                 ImagePickerReturnType.Bitmap -> {
                     imagePickerCallback?.callback(uri?.toBitmap(this@ImagePickerFragment.requireContext()))
                 }

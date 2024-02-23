@@ -9,12 +9,12 @@ buildscript {
         imagepicker = [
                 groupId    : 'com.github.keepLove',
                 artifactId : 'SImagePicker',
-                versionCode: 6,
-                versionName: "2.1",
+                versionCode: 7,
+                versionName: "2.2",
 
                 minSdk     : 16,
-                targetSdk  : 30,
-                compileSdk : 30,
+                targetSdk  : 31,
+                compileSdk : 31,
         ]
 
     }
