@@ -1,20 +1,26 @@
 package com.s.android.imagepicker
 
-import android.Manifest
 import android.app.Activity
 import android.app.Application
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.s.android.imagepicker.listener.ImagePickerRequest
 import com.s.android.imagepicker.listener.ImagePickerReturnType
-import com.s.android.imagepicker.utils.*
+import com.s.android.imagepicker.utils.checkPhoto
+import com.s.android.imagepicker.utils.crop_uri
+import com.s.android.imagepicker.utils.getCropFile
+import com.s.android.imagepicker.utils.getImageUri
+import com.s.android.imagepicker.utils.loge
+import com.s.android.imagepicker.utils.sJumpToCamera
+import com.s.android.imagepicker.utils.sJumpToCrop
+import com.s.android.imagepicker.utils.sJumpToPicture
+import com.s.android.imagepicker.utils.toBitmap
+import com.s.android.imagepicker.utils.toFile
 
 /**
  *
@@ -51,50 +57,50 @@ internal class ImagePickerFragment : Fragment() {
      * 跳转到系统摄像机
      */
     fun jumpToCamera() {
-        if (checkPermission()) {
+//        if (checkPermission()) {
             loge("start camera")
             sJumpToCamera(uri, REQUEST_CODE_CAMERA)
-        }
+//        }
     }
 
-    /**
-     * 检查权限
-     */
-    private fun checkPermission(): Boolean {
-        return if (
-            ContextCompat.checkSelfPermission(
-                requireContext(), Manifest.permission.CAMERA
-            ) != PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(
-                requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(
-                    arrayOf(
-                        Manifest.permission.CAMERA,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    ), 0
-                )
-            }
-            false
-        } else {
-            true
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
-            grantResults[1] == PackageManager.PERMISSION_GRANTED
-        ) {
-            jumpToCamera()
-        }
-    }
+//    /**
+//     * 检查权限
+//     */
+//    private fun checkPermission(): Boolean {
+//        return if (
+//            ContextCompat.checkSelfPermission(
+//                requireContext(), Manifest.permission.CAMERA
+//            ) != PackageManager.PERMISSION_GRANTED ||
+//            ContextCompat.checkSelfPermission(
+//                requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE
+//            ) != PackageManager.PERMISSION_GRANTED
+//        ) {
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                requestPermissions(
+//                    arrayOf(
+//                        Manifest.permission.CAMERA,
+//                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+//                    ), 0
+//                )
+//            }
+//            false
+//        } else {
+//            true
+//        }
+//    }
+//
+//    override fun onRequestPermissionsResult(
+//        requestCode: Int,
+//        permissions: Array<out String>,
+//        grantResults: IntArray
+//    ) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+//        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+//            grantResults[1] == PackageManager.PERMISSION_GRANTED
+//        ) {
+//            jumpToCamera()
+//        }
+//    }
 
     init {
         retainInstance = true
